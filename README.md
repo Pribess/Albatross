@@ -30,6 +30,8 @@ Safari는 처음 1회 설정이 필요합니다.
 6. 실행 페이지로 이동해 `Copy` 버튼을 눌러 코드를 복사합니다.
 7. 다시 수강신청 사이트의 `Console` 입력줄에 붙여넣고 `Enter`를 누릅니다.
 
+https://github.com/user-attachments/assets/61c6e9e5-25ac-460e-8e14-14c1321c0215
+
 ## Build
 
 - 빌드: `bun run build`
