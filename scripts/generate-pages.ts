@@ -52,9 +52,8 @@ const html = `<!doctype html>
     .button.copied {
       background: #16a34a;
     }
-    .status {
-      font-size: 13px;
-      color: #6b7280;
+    .button.reloaded {
+      background: #2563eb;
     }
     pre {
       margin: 0;
@@ -76,9 +75,8 @@ const html = `<!doctype html>
     <h1>Albatross Console Loader</h1>
     <p>아래 코드는 <code>raw.githubusercontent.com</code>의 최신 빌드를 불러와 표시합니다.</p>
     <div class="toolbar">
-      <button id="copy" class="button" type="button">Copy Code</button>
+      <button id="copy" class="button" type="button">Copy</button>
       <button id="reload" class="button" type="button">Reload</button>
-      <span id="status" class="status">Ready</span>
     </div>
     <pre><code id="code">Loading...</code></pre>
   </main>
@@ -88,12 +86,11 @@ const html = `<!doctype html>
     const codeEl = document.getElementById("code");
     const copyButton = document.getElementById("copy");
     const reloadButton = document.getElementById("reload");
-    const status = document.getElementById("status");
     let latestCode = "";
     let copiedTimer = 0;
+    let reloadedTimer = 0;
 
     async function loadLatestCode() {
-      status.innerText = "Loading...";
       codeEl.innerText = "Loading...";
 
       try {
@@ -112,17 +109,15 @@ const html = `<!doctype html>
         }
 
         codeEl.innerText = latestCode;
-        status.innerText = "Latest build loaded";
       } catch (error) {
         latestCode = "";
         codeEl.innerText = "Failed to load latest build.";
-        status.innerText = error?.message || "Load failed";
+        console.error(error);
       }
     }
 
     copyButton.addEventListener("click", async () => {
       if (!latestCode) {
-        status.innerText = "No code loaded";
         return;
       }
 
@@ -139,11 +134,22 @@ const html = `<!doctype html>
           copiedTimer = 0;
         }, 1200);
       } catch {
-        status.innerText = "Clipboard blocked - copy manually";
+        console.error("Clipboard blocked - copy manually");
       }
     });
 
     reloadButton.addEventListener("click", () => {
+      reloadButton.classList.add("reloaded");
+
+      if (reloadedTimer) {
+        clearTimeout(reloadedTimer);
+      }
+
+      reloadedTimer = window.setTimeout(() => {
+        reloadButton.classList.remove("reloaded");
+        reloadedTimer = 0;
+      }, 1200);
+
       void loadLatestCode();
     });
 
