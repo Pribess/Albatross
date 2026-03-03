@@ -26,13 +26,21 @@
 
   overlay.innerHTML =
     '<div style="font-weight:600;margin-bottom:8px;">' +
-    "Macro Panel" +
+    "Albatross" +
     '<button id="closeBtn" style="float:right;background:none;border:none;color:#fff;cursor:pointer;">' +
     "✕" +
     "</button>" +
     "</div>" +
+    '<div style="display:grid;gap:6px;margin-bottom:10px;">' +
+    '<input id="input1" placeholder="Input 1" style="width:100%;box-sizing:border-box;padding:6px;border-radius:6px;border:1px solid #4b5563;background:#111827;color:#fff;" />' +
+    '<input id="input2" placeholder="Input 2" style="width:100%;box-sizing:border-box;padding:6px;border-radius:6px;border:1px solid #4b5563;background:#111827;color:#fff;" />' +
+    '<input id="input3" placeholder="Input 3" style="width:100%;box-sizing:border-box;padding:6px;border-radius:6px;border:1px solid #4b5563;background:#111827;color:#fff;" />' +
+    '<input id="input4" placeholder="Input 4" style="width:100%;box-sizing:border-box;padding:6px;border-radius:6px;border:1px solid #4b5563;background:#111827;color:#fff;" />' +
+    '<input id="input5" placeholder="Input 5" style="width:100%;box-sizing:border-box;padding:6px;border-radius:6px;border:1px solid #4b5563;background:#111827;color:#fff;" />' +
+    '<input id="input6" placeholder="Input 6" style="width:100%;box-sizing:border-box;padding:6px;border-radius:6px;border:1px solid #4b5563;background:#111827;color:#fff;" />' +
+    "</div>" +
     '<button id="runBtn" style="width:100%;padding:6px;border-radius:6px;border:none;background:#3b82f6;color:white;cursor:pointer;">' +
-    "Run Macro" +
+    "Run" +
     "</button>";
 
   document.body.appendChild(overlay);
