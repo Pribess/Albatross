@@ -1,5 +1,13 @@
 (() => {
   const id = "__MY_MACRO_OVERLAY__";
+  const targetInputIds = [
+    "__input6-__list0-0-inner",
+    "__input6-__list0-1-inner",
+    "__input6-__list0-2-inner",
+    "__input6-__list0-3-inner",
+    "__input6-__list0-4-inner",
+    "__input6-__list0-5-inner",
+  ];
 
   const old = document.getElementById(id);
   if (old) {
@@ -41,12 +49,14 @@
     "</div>" +
     '<button id="runBtn" style="width:100%;padding:6px;border-radius:6px;border:none;background:#3b82f6;color:white;cursor:pointer;">' +
     "Run" +
-    "</button>";
+    "</button>" +
+    '<div id="statusMsg" style="margin-top:8px;min-height:16px;color:#ef4444;font-size:12px;"></div>';
 
   document.body.appendChild(overlay);
 
   const closeBtn = overlay.querySelector<HTMLButtonElement>("#closeBtn");
   const runBtn = overlay.querySelector<HTMLButtonElement>("#runBtn");
+  const statusMsg = overlay.querySelector<HTMLDivElement>("#statusMsg");
 
   if (closeBtn) {
     closeBtn.onclick = () => {
@@ -56,8 +66,38 @@
 
   if (runBtn) {
     runBtn.onclick = () => {
-      console.log("Macro running...");
-      alert("Macro executed");
+      if (statusMsg) {
+        statusMsg.textContent = "";
+      }
+
+      const sourceValues = [
+        overlay.querySelector<HTMLInputElement>("#input1")?.value ?? "",
+        overlay.querySelector<HTMLInputElement>("#input2")?.value ?? "",
+        overlay.querySelector<HTMLInputElement>("#input3")?.value ?? "",
+        overlay.querySelector<HTMLInputElement>("#input4")?.value ?? "",
+        overlay.querySelector<HTMLInputElement>("#input5")?.value ?? "",
+        overlay.querySelector<HTMLInputElement>("#input6")?.value ?? "",
+      ];
+
+      const missingTargetIds: string[] = [];
+
+      targetInputIds.forEach((targetId, index) => {
+        const targetInput = document.getElementById(targetId);
+
+        if (!(targetInput instanceof HTMLInputElement)) {
+          missingTargetIds.push(targetId);
+          return;
+        }
+
+        targetInput.focus();
+        targetInput.value = sourceValues[index] ?? "";
+        targetInput.dispatchEvent(new Event("input", { bubbles: true }));
+        targetInput.dispatchEvent(new Event("change", { bubbles: true }));
+      });
+
+      if (statusMsg && missingTargetIds.length > 0) {
+        statusMsg.textContent = `입력칸을 찾지 못했습니다: ${missingTargetIds.join(", ")}`;
+      }
     };
   }
 
