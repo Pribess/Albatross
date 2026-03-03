@@ -10,8 +10,6 @@ DOM 기반 서강대 수강신청 매크로입니다.
 
 실행 순서는 `코드 복사 -> 수강신청 페이지 Console 붙여넣기 -> Enter` 입니다.
 
-복사 후 브라우저별로 아래 순서대로 진행하면 됩니다.
-
 ### Chrome
 
 1. 수강신청 사이트 페이지를 켭니다.
@@ -31,12 +29,6 @@ Safari는 처음 1회 설정이 필요합니다.
 5. 하단/우측에 열린 개발자창에서 `Console` 탭을 누릅니다.
 6. 실행 페이지로 이동해 `Copy` 버튼을 눌러 코드를 복사합니다.
 7. 다시 수강신청 사이트의 `Console` 입력줄에 붙여넣고 `Enter`를 누릅니다.
-
-## 시연 영상
-
-<video src="https://raw.githubusercontent.com/Pribess/Albatross/main/demo/output.mov" controls width="100%"></video>
-
-- 다운로드/새 탭 재생: [output.mov 보기](./demo/output.mov)
 
 ## Build
 

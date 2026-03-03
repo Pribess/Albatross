@@ -3,7 +3,7 @@ const outputPath = `${outputDir}/index.html`;
 const outputBundlePath = `${outputDir}/main.js`;
 const sourceBundlePath = "dist/main.js";
 
-const rawUrl = "https://raw.githubusercontent.com/Pribess/Albatross/gh-pages/main.js";
+const rawUrl = "./main.js";
 const bundleCode = await Bun.file(sourceBundlePath).text();
 
 if (!bundleCode.trim()) {
@@ -79,7 +79,7 @@ const html = `<!doctype html>
 <body>
   <main class="wrap">
     <h1>Albatross Console Loader</h1>
-    <p>아래 코드는 <code>raw.githubusercontent.com</code>의 최신 빌드를 불러와 표시합니다.</p>
+    <p>아래 코드는 현재 Pages 배포의 최신 빌드 파일을 불러와 표시합니다.</p>
     <div class="toolbar">
       <button id="copy" class="button" type="button">Copy</button>
     </div>
