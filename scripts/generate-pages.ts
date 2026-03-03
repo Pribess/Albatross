@@ -47,6 +47,10 @@ const html = `<!doctype html>
       color: #fff;
       cursor: pointer;
       font-weight: 600;
+      transition: background-color 0.2s ease;
+    }
+    .button.copied {
+      background: #16a34a;
     }
     .status {
       font-size: 13px;
@@ -86,6 +90,7 @@ const html = `<!doctype html>
     const reloadButton = document.getElementById("reload");
     const status = document.getElementById("status");
     let latestCode = "";
+    let copiedTimer = 0;
 
     async function loadLatestCode() {
       status.innerText = "Loading...";
@@ -123,7 +128,16 @@ const html = `<!doctype html>
 
       try {
         await navigator.clipboard.writeText(latestCode);
-        status.innerText = "Copied";
+        copyButton.classList.add("copied");
+
+        if (copiedTimer) {
+          clearTimeout(copiedTimer);
+        }
+
+        copiedTimer = window.setTimeout(() => {
+          copyButton.classList.remove("copied");
+          copiedTimer = 0;
+        }, 1200);
       } catch {
         status.innerText = "Clipboard blocked - copy manually";
       }
