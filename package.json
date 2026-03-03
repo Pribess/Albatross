@@ -1,0 +1,22 @@
+{
+  "name": "albatross",
+  "module": "src/main.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "format": "oxfmt src scripts",
+    "lint": "oxlint src scripts",
+    "build": "bun run scripts/build.ts",
+    "check": "bun run format && bun run lint && bun run build"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "oxc-minify": "^0.116.0",
+    "oxc-transform": "^0.116.0",
+    "oxfmt": "^0.36.0",
+    "oxlint": "^1.51.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
