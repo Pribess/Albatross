@@ -1,5 +1,7 @@
 (() => {
   const id = "__MY_MACRO_OVERLAY__";
+  const sourceValuesStorageKey = "__ALBATROSS_SOURCE_VALUES__";
+  const sourceInputIds = ["input1", "input2", "input3", "input4", "input5", "input6"];
   const targetInputIds = [
     "__input6-__list0-0-inner",
     "__input6-__list0-1-inner",
@@ -57,6 +59,79 @@
   const closeBtn = overlay.querySelector<HTMLButtonElement>("#closeBtn");
   const runBtn = overlay.querySelector<HTMLButtonElement>("#runBtn");
   const statusMsg = overlay.querySelector<HTMLDivElement>("#statusMsg");
+  const sourceInputs = sourceInputIds
+    .map((sourceInputId) => overlay.querySelector<HTMLInputElement>(`#${sourceInputId}`))
+    .filter((sourceInput): sourceInput is HTMLInputElement => sourceInput !== null);
+
+  const setStatusMessage = (message: string) => {
+    if (statusMsg) {
+      statusMsg.textContent = message;
+    }
+  };
+
+  const loadSavedSourceValues = () => {
+    let rawValues = "";
+
+    try {
+      rawValues = localStorage.getItem(sourceValuesStorageKey) ?? "";
+    } catch {
+      setStatusMessage("저장된 값을 읽지 못했습니다.");
+      return;
+    }
+
+    if (!rawValues) {
+      return;
+    }
+
+    let parsedValues: unknown = null;
+
+    try {
+      parsedValues = JSON.parse(rawValues);
+    } catch {
+      setStatusMessage("저장된 값 형식이 올바르지 않습니다.");
+      return;
+    }
+
+    if (!Array.isArray(parsedValues)) {
+      return;
+    }
+
+    sourceInputs.forEach((sourceInput, index) => {
+      const parsedValue = parsedValues[index];
+
+      if (typeof parsedValue === "string") {
+        sourceInput.value = parsedValue;
+      }
+    });
+  };
+
+  const saveSourceValues = () => {
+    const values = sourceInputs.map((sourceInput) => sourceInput.value);
+
+    try {
+      localStorage.setItem(sourceValuesStorageKey, JSON.stringify(values));
+    } catch {
+      setStatusMessage("값을 저장하지 못했습니다.");
+    }
+
+    return values;
+  };
+
+  loadSavedSourceValues();
+
+  sourceInputs.forEach((sourceInput) => {
+    sourceInput.addEventListener("input", () => {
+      saveSourceValues();
+    });
+  });
+
+  window.addEventListener("storage", (event) => {
+    if (event.key !== sourceValuesStorageKey) {
+      return;
+    }
+
+    loadSavedSourceValues();
+  });
 
   if (closeBtn) {
     closeBtn.onclick = () => {
@@ -66,18 +141,14 @@
 
   if (runBtn) {
     runBtn.onclick = () => {
-      if (statusMsg) {
-        statusMsg.textContent = "";
-      }
+      setStatusMessage("");
 
-      const sourceValues = [
-        overlay.querySelector<HTMLInputElement>("#input1")?.value ?? "",
-        overlay.querySelector<HTMLInputElement>("#input2")?.value ?? "",
-        overlay.querySelector<HTMLInputElement>("#input3")?.value ?? "",
-        overlay.querySelector<HTMLInputElement>("#input4")?.value ?? "",
-        overlay.querySelector<HTMLInputElement>("#input5")?.value ?? "",
-        overlay.querySelector<HTMLInputElement>("#input6")?.value ?? "",
-      ];
+      const sourceValues = saveSourceValues();
+      const parsedValues = sourceValues
+        .join(" ")
+        .trim()
+        .split(/\s+/)
+        .filter((value) => value.length > 0);
 
       const missingTargetIds: string[] = [];
 
@@ -90,13 +161,13 @@
         }
 
         targetInput.focus();
-        targetInput.value = sourceValues[index] ?? "";
+        targetInput.value = parsedValues[index] ?? "";
         targetInput.dispatchEvent(new Event("input", { bubbles: true }));
         targetInput.dispatchEvent(new Event("change", { bubbles: true }));
       });
 
       if (statusMsg && missingTargetIds.length > 0) {
-        statusMsg.textContent = `입력칸을 찾지 못했습니다: ${missingTargetIds.join(", ")}`;
+        setStatusMessage(`입력칸을 찾지 못했습니다: ${missingTargetIds.join(", ")}`);
       }
     };
   }
