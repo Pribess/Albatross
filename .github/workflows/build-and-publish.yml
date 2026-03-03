@@ -6,6 +6,10 @@ on:
       - main
   workflow_dispatch:
 
+concurrency:
+  group: deploy
+  cancel-in-progress: true
+
 permissions:
   contents: write
 
@@ -26,13 +30,21 @@ jobs:
       - name: Lint and build
         run: bun run check
 
-      - name: Publish built JS to Release asset
-        uses: ncipollo/release-action@v1
+      - name: Generate Pages site
+        run: bun run scripts/generate-pages.ts
+
+      - name: Publish built JS to build-assets branch
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          tag: build-latest
-          name: Latest Build
-          body: Automated build artifact from main.
-          allowUpdates: true
-          makeLatest: true
-          replacesArtifacts: true
-          artifacts: dist/main.js
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: build-assets
+          publish_dir: ./dist
+          force_orphan: true
+
+      - name: Publish loader page to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./pages
+          force_orphan: true
