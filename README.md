@@ -12,11 +12,11 @@ bun run build
 ## Browser Console에서 바로 실행
 
 아래 스크립트를 브라우저 개발자도구 Console에 붙여넣으면,
-Actions가 `gh-pages` 브랜치에 배포한 `main.js`를 `raw.githubusercontent.com`에서 가져와 즉시 실행합니다.
+Actions가 Release(`build-latest`)에 업로드한 `main.js`를 가져와 즉시 실행합니다.
 
 ```js
 (() => {
-  const url = "https://raw.githubusercontent.com/Pribess/Albatross/gh-pages/main.js";
+  const url = "https://github.com/Pribess/Albatross/releases/latest/download/main.js";
 
   fetch(url, { cache: "no-store" })
     .then((response) => {

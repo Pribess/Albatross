@@ -26,9 +26,13 @@ jobs:
       - name: Lint and build
         run: bun run check
 
-      - name: Publish built JS to gh-pages
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Publish built JS to Release asset
+        uses: ncipollo/release-action@v1
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
-          force_orphan: true
+          tag: build-latest
+          name: Latest Build
+          body: Automated build artifact from main.
+          allowUpdates: true
+          makeLatest: true
+          replacesArtifacts: true
+          artifacts: dist/main.js
