@@ -91,6 +91,18 @@
     return tab1SourceInputIds;
   };
 
+  const setInputValue = (inputId: string, value: string) => {
+    const input = overlay.querySelector<HTMLInputElement>(`#${inputId}`);
+
+    if (!input) {
+      return;
+    }
+
+    input.value = value;
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  };
+
   const setActiveTab = (tabIndex: number) => {
     activeTabIndex = tabIndex;
 
@@ -111,31 +123,32 @@
     }
   };
 
-  const normalizeMultilinePaste = (input: HTMLInputElement) => {
-    input.addEventListener("paste", (event) => {
-      const pastedText = event.clipboardData?.getData("text") ?? "";
+  [tab1SourceInputIds, tab2SourceInputIds].forEach((sourceInputIds) => {
+    sourceInputIds.forEach((sourceInputId, startIndex) => {
+      const input = overlay.querySelector<HTMLInputElement>(`#${sourceInputId}`);
 
-      if (!/[\r\n]/.test(pastedText)) {
+      if (!input) {
         return;
       }
 
-      event.preventDefault();
+      input.addEventListener("paste", (event) => {
+        const pastedText = event.clipboardData?.getData("text") ?? "";
+        const parsedValues = pastedText
+          .trim()
+          .split(/\s+/)
+          .filter((value) => value.length > 0);
 
-      const mergedValue = pastedText
-        .split(/\s+/)
-        .filter((token) => token.length > 0)
-        .join(" ");
+        if (parsedValues.length <= 1) {
+          return;
+        }
 
-      input.value = mergedValue;
+        event.preventDefault();
+
+        sourceInputIds.slice(startIndex).forEach((targetInputId, offset) => {
+          setInputValue(targetInputId, parsedValues[offset] ?? "");
+        });
+      });
     });
-  };
-
-  [...tab1SourceInputIds, ...tab2SourceInputIds].forEach((sourceInputId) => {
-    const input = overlay.querySelector<HTMLInputElement>(`#${sourceInputId}`);
-
-    if (input) {
-      normalizeMultilinePaste(input);
-    }
   });
 
   if (tab1Btn) {
@@ -200,6 +213,10 @@
   let offsetY = 0;
 
   overlay.addEventListener("mousedown", (event) => {
+    if (event.target instanceof HTMLInputElement) {
+      return;
+    }
+
     isDragging = true;
     offsetX = event.clientX - overlay.offsetLeft;
     offsetY = event.clientY - overlay.offsetTop;
