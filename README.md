@@ -34,9 +34,9 @@ Safari는 처음 1회 설정이 필요합니다.
 
 ## 시연 영상
 
-<video src="https://raw.githubusercontent.com/Pribess/Albatross/main/demo/output.mp4" controls width="100%"></video>
+<video src="https://raw.githubusercontent.com/Pribess/Albatross/main/demo/output.mov" controls width="100%"></video>
 
-- 다운로드/새 탭 재생: [output.mp4 보기](./demo/output.mp4)
+- 다운로드/새 탭 재생: [output.mov 보기](./demo/output.mov)
 
 ## Build
 
