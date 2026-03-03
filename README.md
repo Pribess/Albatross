@@ -31,6 +31,10 @@ Safari는 처음 1회 설정이 필요합니다.
 6. 실행 페이지에서 `Copy` 버튼을 눌러 코드를 복사합니다.
 7. 수강신청 사이트의 `Console` 입력줄에 붙여넣고 `Enter`를 누릅니다.
 
+## 시연 영상
+
+- [output.mp4 보기](./demo/output.mp4)
+
 ## Build
 
 - 빌드: `bun run build`
