@@ -1,19 +1,40 @@
 # Albatross
 
-서강대 수강신청 매크로
+DOM 기반 서강대 수강신청 매크로입니다.
+
+## 사용방법 (처음 쓰는 사람용)
+
+먼저 아래 페이지를 여세요.
+
+- 실행 페이지: [https://pribess.github.io/Albatross/](https://pribess.github.io/Albatross/)
+- 실행 페이지와 수강신청 페이지를 각각 다른 탭으로 열어두세요.
+
+그 다음 브라우저별로 아래 순서대로 진행하면 됩니다.
+
+### Chrome
+
+1. 수강신청 사이트 페이지를 켭니다.
+2. 키보드에서 `F12`를 누릅니다. (Mac은 `Option + Command + J`)
+3. 위쪽 탭에서 `Console`을 누릅니다. (Mac 단축키로 이미 Console이 열렸으면 생략)
+4. 실행 페이지에서 `Copy` 버튼을 눌러 코드를 복사합니다.
+5. 수강신청 사이트의 `Console` 입력줄에 붙여넣고 `Enter`를 누릅니다.
+
+### Safari
+
+Safari는 처음 1회 설정이 필요합니다.
+
+1. Safari 상단 메뉴에서 `Safari > 설정 > 고급`으로 들어갑니다.
+2. 맨 아래 `메뉴 막대에서 개발자용 메뉴 보기`를 체크합니다.
+3. 수강신청 사이트 페이지를 켭니다.
+4. 키보드에서 `Option + Command + C`를 누릅니다.
+5. 하단/우측에 열린 개발자창에서 `Console` 탭을 누릅니다.
+6. 실행 페이지에서 `Copy` 버튼을 눌러 코드를 복사합니다.
+7. 수강신청 사이트의 `Console` 입력줄에 붙여넣고 `Enter`를 누릅니다.
 
 ## Build
 
 - 설치: `bun install`
 - 빌드: `bun run build`
-
-## Browser Console에서 바로 실행
-
-복사 버튼이 있는 페이지에서 코드를 복사해서 Console에 붙여넣어 실행하세요.
-
-- Pages 링크: [https://pribess.github.io/Albatross/](https://pribess.github.io/Albatross/)
-- Pages는 `raw.githubusercontent.com/Pribess/Albatross/build-assets/main.js`를 매번 fetch해 최신 코드를 보여줍니다.
-- push 시 Actions가 최신 빌드를 생성하고 Pages를 자동 갱신합니다.
 
 ## Commands
 

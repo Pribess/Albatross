@@ -42,11 +42,13 @@ const html = `<!doctype html>
     .button {
       border: 0;
       border-radius: 10px;
-      padding: 10px 14px;
+      padding: 14px 20px;
       background: #111827;
       color: #fff;
       cursor: pointer;
       font-weight: 600;
+      font-size: 15px;
+      min-width: 110px;
       transition: background-color 0.2s ease;
     }
     .button.copied {
@@ -117,22 +119,23 @@ const html = `<!doctype html>
     }
 
     copyButton.addEventListener("click", async () => {
+      copyButton.classList.add("copied");
+
+      if (copiedTimer) {
+        clearTimeout(copiedTimer);
+      }
+
+      copiedTimer = window.setTimeout(() => {
+        copyButton.classList.remove("copied");
+        copiedTimer = 0;
+      }, 1200);
+
       if (!latestCode) {
         return;
       }
 
       try {
         await navigator.clipboard.writeText(latestCode);
-        copyButton.classList.add("copied");
-
-        if (copiedTimer) {
-          clearTimeout(copiedTimer);
-        }
-
-        copiedTimer = window.setTimeout(() => {
-          copyButton.classList.remove("copied");
-          copiedTimer = 0;
-        }, 1200);
       } catch {
         console.error("Clipboard blocked - copy manually");
       }
