@@ -1,7 +1,14 @@
 const outputDir = "pages";
 const outputPath = `${outputDir}/index.html`;
+const outputBundlePath = `${outputDir}/main.js`;
+const sourceBundlePath = "dist/main.js";
 
-const rawUrl = "https://raw.githubusercontent.com/Pribess/Albatross/build-assets/main.js";
+const rawUrl = "https://raw.githubusercontent.com/Pribess/Albatross/gh-pages/main.js";
+const bundleCode = await Bun.file(sourceBundlePath).text();
+
+if (!bundleCode.trim()) {
+  throw new Error("dist/main.js is empty. Run bun run build first.");
+}
 
 const html = `<!doctype html>
 <html lang="ko">
@@ -54,9 +61,6 @@ const html = `<!doctype html>
     .button.copied {
       background: #16a34a;
     }
-    .button.reloaded {
-      background: #2563eb;
-    }
     pre {
       margin: 0;
       border-radius: 12px;
@@ -78,7 +82,6 @@ const html = `<!doctype html>
     <p>아래 코드는 <code>raw.githubusercontent.com</code>의 최신 빌드를 불러와 표시합니다.</p>
     <div class="toolbar">
       <button id="copy" class="button" type="button">Copy</button>
-      <button id="reload" class="button" type="button">Reload</button>
     </div>
     <pre><code id="code">Loading...</code></pre>
   </main>
@@ -87,10 +90,8 @@ const html = `<!doctype html>
     const rawUrl = ${JSON.stringify(rawUrl)};
     const codeEl = document.getElementById("code");
     const copyButton = document.getElementById("copy");
-    const reloadButton = document.getElementById("reload");
     let latestCode = "";
     let copiedTimer = 0;
-    let reloadedTimer = 0;
 
     async function loadLatestCode() {
       codeEl.innerText = "Loading...";
@@ -141,21 +142,6 @@ const html = `<!doctype html>
       }
     });
 
-    reloadButton.addEventListener("click", () => {
-      reloadButton.classList.add("reloaded");
-
-      if (reloadedTimer) {
-        clearTimeout(reloadedTimer);
-      }
-
-      reloadedTimer = window.setTimeout(() => {
-        reloadButton.classList.remove("reloaded");
-        reloadedTimer = 0;
-      }, 1200);
-
-      void loadLatestCode();
-    });
-
     void loadLatestCode();
   </script>
 </body>
@@ -164,3 +150,4 @@ const html = `<!doctype html>
 
 await Bun.$`mkdir -p ${outputDir}`;
 await Bun.write(outputPath, html);
+await Bun.write(outputBundlePath, bundleCode);

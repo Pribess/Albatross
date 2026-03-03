@@ -14,7 +14,7 @@ permissions:
   contents: write
 
 jobs:
-  build-and-publish:
+  publish-gh-pages:
     runs-on: ubuntu-latest
 
     steps:
@@ -32,14 +32,6 @@ jobs:
 
       - name: Generate Pages site
         run: bun run scripts/generate-pages.ts
-
-      - name: Publish built JS to build-assets branch
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: build-assets
-          publish_dir: ./dist
-          force_orphan: true
 
       - name: Publish loader page to gh-pages
         uses: peaceiris/actions-gh-pages@v4
