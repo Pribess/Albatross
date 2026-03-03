@@ -1,7 +1,7 @@
 (() => {
   const id = "__MY_MACRO_OVERLAY__";
-  const sourceValuesStorageKey = "__ALBATROSS_SOURCE_VALUES__";
-  const sourceInputIds = ["input1", "input2", "input3", "input4", "input5", "input6"];
+  const tab1SourceInputIds = ["input1", "input2", "input3", "input4", "input5", "input6"];
+  const tab2SourceInputIds = ["input7", "input8", "input9", "input10", "input11", "input12"];
   const targetInputIds = [
     "__input6-__list0-0-inner",
     "__input6-__list0-1-inner",
@@ -35,19 +35,31 @@
     "cursor: move;";
 
   overlay.innerHTML =
+    '<div style="display:flex;gap:6px;margin-bottom:8px;">' +
+    '<button id="tab1Btn" style="flex:1;padding:6px;border-radius:6px;border:none;background:#3b82f6;color:#fff;cursor:pointer;">Tab 1</button>' +
+    '<button id="tab2Btn" style="flex:1;padding:6px;border-radius:6px;border:none;background:#1f2937;color:#fff;cursor:pointer;">Tab 2</button>' +
+    "</div>" +
     '<div style="font-weight:600;margin-bottom:8px;">' +
     "Albatross" +
     '<button id="closeBtn" style="float:right;background:none;border:none;color:#fff;cursor:pointer;">' +
     "✕" +
     "</button>" +
     "</div>" +
-    '<div style="display:grid;gap:6px;margin-bottom:10px;">' +
+    '<div id="tab1Fields" style="display:grid;gap:6px;margin-bottom:10px;">' +
     '<input id="input1" placeholder="Input 1" style="width:100%;box-sizing:border-box;padding:6px;border-radius:6px;border:1px solid #4b5563;background:#111827;color:#fff;" />' +
     '<input id="input2" placeholder="Input 2" style="width:100%;box-sizing:border-box;padding:6px;border-radius:6px;border:1px solid #4b5563;background:#111827;color:#fff;" />' +
     '<input id="input3" placeholder="Input 3" style="width:100%;box-sizing:border-box;padding:6px;border-radius:6px;border:1px solid #4b5563;background:#111827;color:#fff;" />' +
     '<input id="input4" placeholder="Input 4" style="width:100%;box-sizing:border-box;padding:6px;border-radius:6px;border:1px solid #4b5563;background:#111827;color:#fff;" />' +
     '<input id="input5" placeholder="Input 5" style="width:100%;box-sizing:border-box;padding:6px;border-radius:6px;border:1px solid #4b5563;background:#111827;color:#fff;" />' +
     '<input id="input6" placeholder="Input 6" style="width:100%;box-sizing:border-box;padding:6px;border-radius:6px;border:1px solid #4b5563;background:#111827;color:#fff;" />' +
+    "</div>" +
+    '<div id="tab2Fields" style="display:none;gap:6px;margin-bottom:10px;">' +
+    '<input id="input7" placeholder="Input 1" style="width:100%;box-sizing:border-box;padding:6px;border-radius:6px;border:1px solid #4b5563;background:#111827;color:#fff;" />' +
+    '<input id="input8" placeholder="Input 2" style="width:100%;box-sizing:border-box;padding:6px;border-radius:6px;border:1px solid #4b5563;background:#111827;color:#fff;" />' +
+    '<input id="input9" placeholder="Input 3" style="width:100%;box-sizing:border-box;padding:6px;border-radius:6px;border:1px solid #4b5563;background:#111827;color:#fff;" />' +
+    '<input id="input10" placeholder="Input 4" style="width:100%;box-sizing:border-box;padding:6px;border-radius:6px;border:1px solid #4b5563;background:#111827;color:#fff;" />' +
+    '<input id="input11" placeholder="Input 5" style="width:100%;box-sizing:border-box;padding:6px;border-radius:6px;border:1px solid #4b5563;background:#111827;color:#fff;" />' +
+    '<input id="input12" placeholder="Input 6" style="width:100%;box-sizing:border-box;padding:6px;border-radius:6px;border:1px solid #4b5563;background:#111827;color:#fff;" />' +
     "</div>" +
     '<button id="runBtn" style="width:100%;padding:6px;border-radius:6px;border:none;background:#3b82f6;color:white;cursor:pointer;">' +
     "Run" +
@@ -59,9 +71,11 @@
   const closeBtn = overlay.querySelector<HTMLButtonElement>("#closeBtn");
   const runBtn = overlay.querySelector<HTMLButtonElement>("#runBtn");
   const statusMsg = overlay.querySelector<HTMLDivElement>("#statusMsg");
-  const sourceInputs = sourceInputIds
-    .map((sourceInputId) => overlay.querySelector<HTMLInputElement>(`#${sourceInputId}`))
-    .filter((sourceInput): sourceInput is HTMLInputElement => sourceInput !== null);
+  const tab1Btn = overlay.querySelector<HTMLButtonElement>("#tab1Btn");
+  const tab2Btn = overlay.querySelector<HTMLButtonElement>("#tab2Btn");
+  const tab1Fields = overlay.querySelector<HTMLDivElement>("#tab1Fields");
+  const tab2Fields = overlay.querySelector<HTMLDivElement>("#tab2Fields");
+  let activeTabIndex = 0;
 
   const setStatusMessage = (message: string) => {
     if (statusMsg) {
@@ -69,69 +83,74 @@
     }
   };
 
-  const loadSavedSourceValues = () => {
-    let rawValues = "";
-
-    try {
-      rawValues = localStorage.getItem(sourceValuesStorageKey) ?? "";
-    } catch {
-      setStatusMessage("저장된 값을 읽지 못했습니다.");
-      return;
+  const getSourceInputIds = (tabIndex: number) => {
+    if (tabIndex === 1) {
+      return tab2SourceInputIds;
     }
 
-    if (!rawValues) {
-      return;
+    return tab1SourceInputIds;
+  };
+
+  const setActiveTab = (tabIndex: number) => {
+    activeTabIndex = tabIndex;
+
+    if (tab1Fields) {
+      tab1Fields.style.display = tabIndex === 0 ? "grid" : "none";
     }
 
-    let parsedValues: unknown = null;
-
-    try {
-      parsedValues = JSON.parse(rawValues);
-    } catch {
-      setStatusMessage("저장된 값 형식이 올바르지 않습니다.");
-      return;
+    if (tab2Fields) {
+      tab2Fields.style.display = tabIndex === 1 ? "grid" : "none";
     }
 
-    if (!Array.isArray(parsedValues)) {
-      return;
+    if (tab1Btn) {
+      tab1Btn.style.background = tabIndex === 0 ? "#3b82f6" : "#1f2937";
     }
 
-    sourceInputs.forEach((sourceInput, index) => {
-      const parsedValue = parsedValues[index];
+    if (tab2Btn) {
+      tab2Btn.style.background = tabIndex === 1 ? "#3b82f6" : "#1f2937";
+    }
+  };
 
-      if (typeof parsedValue === "string") {
-        sourceInput.value = parsedValue;
+  const normalizeMultilinePaste = (input: HTMLInputElement) => {
+    input.addEventListener("paste", (event) => {
+      const pastedText = event.clipboardData?.getData("text") ?? "";
+
+      if (!/[\r\n]/.test(pastedText)) {
+        return;
       }
+
+      event.preventDefault();
+
+      const mergedValue = pastedText
+        .split(/\s+/)
+        .filter((token) => token.length > 0)
+        .join(" ");
+
+      input.value = mergedValue;
     });
   };
 
-  const saveSourceValues = () => {
-    const values = sourceInputs.map((sourceInput) => sourceInput.value);
+  [...tab1SourceInputIds, ...tab2SourceInputIds].forEach((sourceInputId) => {
+    const input = overlay.querySelector<HTMLInputElement>(`#${sourceInputId}`);
 
-    try {
-      localStorage.setItem(sourceValuesStorageKey, JSON.stringify(values));
-    } catch {
-      setStatusMessage("값을 저장하지 못했습니다.");
+    if (input) {
+      normalizeMultilinePaste(input);
     }
-
-    return values;
-  };
-
-  loadSavedSourceValues();
-
-  sourceInputs.forEach((sourceInput) => {
-    sourceInput.addEventListener("input", () => {
-      saveSourceValues();
-    });
   });
 
-  window.addEventListener("storage", (event) => {
-    if (event.key !== sourceValuesStorageKey) {
-      return;
-    }
+  if (tab1Btn) {
+    tab1Btn.onclick = () => {
+      setActiveTab(0);
+    };
+  }
 
-    loadSavedSourceValues();
-  });
+  if (tab2Btn) {
+    tab2Btn.onclick = () => {
+      setActiveTab(1);
+    };
+  }
+
+  setActiveTab(0);
 
   if (closeBtn) {
     closeBtn.onclick = () => {
@@ -143,7 +162,11 @@
     runBtn.onclick = () => {
       setStatusMessage("");
 
-      const sourceValues = saveSourceValues();
+      const sourceInputIds = getSourceInputIds(activeTabIndex);
+      const sourceValues = sourceInputIds.map(
+        (sourceInputId) =>
+          overlay.querySelector<HTMLInputElement>(`#${sourceInputId}`)?.value ?? "",
+      );
       const parsedValues = sourceValues
         .join(" ")
         .trim()
