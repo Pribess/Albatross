@@ -15,6 +15,7 @@ coverage
 logs
 _.log
 report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
+scripts/explore-time-output.json
 
 # dotenv environment variable files
 .env

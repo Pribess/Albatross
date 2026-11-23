@@ -7,6 +7,7 @@
     "format": "oxfmt src scripts",
     "lint": "oxlint src scripts",
     "build": "bun run scripts/build.ts",
+    "inject": "bun run scripts/inject.ts",
     "check": "bun run format && bun run lint && bun run build"
   },
   "devDependencies": {
